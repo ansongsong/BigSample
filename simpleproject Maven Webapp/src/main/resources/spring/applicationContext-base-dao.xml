@@ -36,7 +36,6 @@
 <!--配置 mapper自动扫描器
  bean名称就是mapper类名（首字母小写）
  -->
-
 <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
    <!-- 配置扫描包路径 ，如果扫描多个包路径，中间使用半角逗号分隔-->
    <property name="basePackage" value="simple.base.dao.mapper"/>

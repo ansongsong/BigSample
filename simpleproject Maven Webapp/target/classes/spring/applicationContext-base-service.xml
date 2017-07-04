@@ -14,6 +14,6 @@
 		http://www.springframework.org/schema/tx/spring-tx-3.1.xsd ">
 
 <!-- 用户管理 -->
-<bean id="userService" class="yycg.base.service.impl.UserServiceImpl"/>
+<bean id="userService" class="simple.base.service.impl.UserServiceImpl"/>
 
 </beans>

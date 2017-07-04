@@ -28,7 +28,14 @@ public class UUIDBuild {
 	public static UUIDBuild getInstance() {
 		return uuidgen;
 	}
-
+	public static void main(String[] args) {
+		
+	}
+	/**
+	 * 将二进制转换为int类型
+	 * @param bytes
+	 * @return
+	 */
 	public static int toInt(byte[] bytes) {
 		int result = 0;
 		for (int i = 0; i < 4; i++) {
@@ -37,13 +44,24 @@ public class UUIDBuild {
 		return result;
 	}
 
-	protected String format(int intval) {
+	/**
+	 * 将数字转换为16进制。之后保持  00000000 长度不变，后面追加16机制字符串
+	 * @param intval
+	 * @return
+	 */
+	protected static String format(int intval) {
 		String formatted = Integer.toHexString(intval);
 		StringBuffer buf = new StringBuffer("00000000");
 		buf.replace(8 - formatted.length(), 8, formatted);
 		return buf.toString();
 	}
 
+	
+	/**
+	 * 将数字转换为16进制。之后保持  0000 长度不变，后面追加16机制字符串
+	 * @param shortval
+	 * @return
+	 */
 	protected String format(short shortval) {
 		String formatted = Integer.toHexString(shortval);
 		StringBuffer buf = new StringBuffer("0000");
@@ -73,7 +91,7 @@ public class UUIDBuild {
 	protected int getLoTime() {
 		return (int) System.currentTimeMillis();
 	}
-
+	
 	public String generate() {
 		return new StringBuffer(36).append(format(getIP())).append(sep).append(
 				format(getJVM())).append(sep).append(format(getHiTime()))
@@ -81,25 +99,16 @@ public class UUIDBuild {
 						format(getCount())).toString();
 	}
 
-	public static void main(String[] str) {
-
-		// 得到一个序号
-		System.out.println(getUUID());
-
-		// 一次得到多个序号
-		String[] UUID_s = getUUID(10);
-		for (int i = 0; i < UUID_s.length; i++) {
-			System.out.println(UUID_s[i]);
-		}
-	}
+	
 
 	// 得到一个序号
 	public static String getUUID() {
-		String s = UUID.randomUUID().toString();
+		String s = UUID.randomUUID().toString(); //a1b3e540-f47b-42d9-bb4a-61a4a00b0518
 		return s.substring(0, 8) + s.substring(9, 13) + s.substring(14, 18)
 				+ s.substring(19, 23) + s.substring(24);
 	}
 
+	
 	/**
 	 * 一次得到多个序号
 	 * 
