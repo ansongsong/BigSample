@@ -14,56 +14,68 @@
 		http://www.springframework.org/schema/tx/spring-tx-3.1.xsd ">
 
 	<!-- 加载配置文件 -->
-	<context:property-placeholder location="classpath:db.properties"/>
-	
+	<context:property-placeholder location="classpath:db.properties" />
+
 	<!-- 数据库连接池 -->
-	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" >
-	       <property name="driverClassName" value="${jdbc.driver}"/>
-			<property name="url" value="${jdbc.url}"/>
-			<property name="username" value="${jdbc.username}"/>
-			<property name="password" value="${jdbc.password}"/>
-			<!-- 开发阶段建议最大连接数据尽量少，够用即可 -->
-			<property name="maxActive" value="${jdbc.maxActive}"/>
-			<property name="maxIdle" value="${jdbc.maxIdle}"/>
+	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource">
+		<property name="driverClassName" value="${jdbc.driver}" />
+		<property name="url" value="${jdbc.url}" />
+		<property name="username" value="${jdbc.username}" />
+		<property name="password" value="${jdbc.password}" />
+		<!-- 开发阶段建议最大连接数据尽量少，够用即可 -->
+		<property name="maxActive" value="${jdbc.maxActive}" />
+		<property name="maxIdle" value="${jdbc.maxIdle}" />
 	</bean>
-	
 	<!-- 事务管理器 -->
-	<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+	<bean id="transactionManager"
+		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
 		<!-- 数据源 -->
-		<property name="dataSource" ref="dataSource"/>
+		<property name="dataSource" ref="dataSource" />
 	</bean>
-	
+
+
+
+
+	<!-- start -->
+	<!-- <bean id="broker" class="org"> </bean> -->
+	<!-- <property name="brokerURL" value="tcp://192.168.1.8:61616" /> -->
+	<!-- org.apache.activemq.pool.PooledConnectionFactory@1abb87e -->
 	<!-- 通知 -->
 	<tx:advice id="txAdvice" transaction-manager="transactionManager">
-	  <tx:attributes>
-	     <!-- 传播行为 -->
-	    <tx:method name="save*" propagation="REQUIRED" rollback-for="java.lang.Exception"/>
-	    <tx:method name="insert*" propagation="REQUIRED" rollback-for="java.lang.Exception"/>
-	    <tx:method name="delete*" propagation="REQUIRED" rollback-for="java.lang.Exception"/>
-	    <tx:method name="update*" propagation="REQUIRED" rollback-for="java.lang.Exception"/>
-	    <tx:method name="find*" propagation="SUPPORTS" read-only="true"/>
-	    <tx:method name="get*" propagation="SUPPORTS" read-only="true"/>
-	  </tx:attributes>
+		<tx:attributes>
+			<!-- 传播行为 -->
+			<tx:method name="save*" propagation="REQUIRED"
+				rollback-for="java.lang.Exception" />
+			<tx:method name="insert*" propagation="REQUIRED"
+				rollback-for="java.lang.Exception" />
+			<tx:method name="delete*" propagation="REQUIRED"
+				rollback-for="java.lang.Exception" />
+			<tx:method name="update*" propagation="REQUIRED"
+				rollback-for="java.lang.Exception" />
+			<tx:method name="find*" propagation="SUPPORTS" read-only="true" />
+			<tx:method name="get*" propagation="SUPPORTS" read-only="true" />
+		</tx:attributes>
 	</tx:advice>
-	
+
 	<!-- 切面 -->
 	<aop:config proxy-target-class="true">
-	  <aop:advisor advice-ref="txAdvice"
-	  pointcut="execution(* simple.*.service.impl.*.*(..))"/>
+		<aop:advisor advice-ref="txAdvice"
+			pointcut="execution(* simple.*.service.impl.*.*(..))" />
 	</aop:config>
 	
-	<!-- start -->
-	<!-- <bean id="broker" class="org">
-	</bean> -->
 	
 	
-	<!-- activeMQ配置       -->
-	<bean id="jmsFactory" class="org.apache.activemq.pool.PooledConnectionFactory" destroy-method="stop">
+	
+	
+	<!-- activeMQ配置 --><!--jms 连接池 -->
+	<bean id="jmsFactory" class="org.apache.activemq.pool.PooledConnectionFactory"
+		destroy-method="stop">
 		<property name="connectionFactory">
-			<bean class="">
-				<property name="brokerURL">
-					<value>tcp://192.168.1.108:61679</value>
-				</property>
+			<bean class="org.apache.activemq.ActiveMQConnectionFactory">
+				<property name="brokerURL" value="tcp://192.168.1.8:61616" />
+				<!-- <property name="brokerURL"> <value>tcp://192.168.1.8:61616</value> 
+					</property> -->
+
 			</bean>
 		</property>
 		<property name="maxConnections" value="100"></property>
@@ -71,16 +83,29 @@
 	<!-- jmsTemplate -->
 	<bean id="jmsTemplate" class="org.springframework.jms.core.JmsTemplate">
 		<property name="connectionFactory" ref="jmsFactory"></property>
-		<property name="defaultDestination" ref="destination"></property>
+		<property name="defaultDestination" ref="destinationTopic"></property>
 		<property name="messageConverter">
-			<bean class="org.springframework.jms.support.converter.SimpleMessageConverter"></bean>
+			<bean
+				class="org.springframework.jms.support.converter.SimpleMessageConverter"></bean>
 		</property>
 	</bean>
-	<!-- destination -->
+	<!-- destination queue -->
 	<bean id="destination" class="org.apache.activemq.command.ActiveMQQueue">
 		<constructor-arg index="0" value="spring-queue"></constructor-arg>
 	</bean>
+	<!-- destination topic -->
+	<bean id="destinationTopic" class="org.apache.activemq.command.ActiveMQTopic">
+		<constructor-arg index="0" value="spring-topic"></constructor-arg>
+	</bean>
+	<!-- -->
+	<bean id="jmsContainer"
+		class="org.springframework.jms.listener.DefaultMessageListenerContainer">
+		<property name="connectionFactory" ref="jmsFactory"></property>
+		<property name="destination" ref="destinationTopic"></property>
+		<property name="messageListener" ref="messageListener"></property>
+	</bean>
+	<bean id="messageListener" class="simple.base.jms.listener.MyMessageListener">
+	</bean>
 	<!-- end -->
-
 
 </beans>

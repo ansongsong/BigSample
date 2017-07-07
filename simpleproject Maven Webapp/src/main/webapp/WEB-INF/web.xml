@@ -3,9 +3,9 @@
 	xmlns="http://java.sun.com/xml/ns/javaee" xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
 	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
 	id="WebApp_ID" version="2.5">
-	<display-name>yycgproject</display-name>
-
-	<!-- 加载spring容器 -->
+	<display-name>simpleproject</display-name>
+	
+		<!-- 加载spring容器 -->
 	<context-param>
 		<param-name>contextConfigLocation</param-name>
 		<param-value>/WEB-INF/classes/spring/applicationContext.xml,/WEB-INF/classes/spring/applicationContext-*.xml</param-value>
@@ -27,8 +27,8 @@
 		<filter-name>CharacterEncodingFilter</filter-name>
 		<url-pattern>/*</url-pattern>
 	</filter-mapping>
-
-
+	
+   
 	<!-- springmvc的前端控制器 -->
 	<servlet>
 		<servlet-name>springmvc</servlet-name>
@@ -73,6 +73,18 @@
 		<servlet-name>dwr-invoker</servlet-name>
 		<url-pattern>/dwr/*</url-pattern>
 	</servlet-mapping> -->
+
+ 	
+ <!-- 权限  Spring Security3.1 的权限过滤，过滤器链-->
+    <filter>
+        <filter-name>springSecurityFilterChain</filter-name>
+        <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>springSecurityFilterChain</filter-name>
+        <url-pattern>/hello/*</url-pattern>
+    </filter-mapping>
+	
 
 	<welcome-file-list>
 		<welcome-file>index.html</welcome-file>

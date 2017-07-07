@@ -1,1 +1,1 @@
-<%response.sendRedirect("first.action"); %>  
+<%response.sendRedirect("hello/first.action"); %>  
