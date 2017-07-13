@@ -22,7 +22,6 @@ import simple.base.service.UserService;
 @Controller
 @RequestMapping("/user")
 public class UserAction {
-	
 	@Autowired
 	private UserService userService;
 	

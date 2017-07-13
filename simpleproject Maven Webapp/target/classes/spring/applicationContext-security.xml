@@ -1,47 +1,67 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans:beans xmlns="http://www.springframework.org/schema/security"
-xmlns:beans="http://www.springframework.org/schema/beans"
-xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-xsi:schemaLocation="http://www.springframework.org/schema/beans
+	xmlns:beans="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
 		http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
 		http://www.springframework.org/schema/security
 		http://www.springframework.org/schema/security/spring-security.xsd">
 
-	
 
-	<!-- 
-	  页面级别：  ①：use-expressions 必须为true
-	  		②：access="ROLE_USER"
-	  	    ③：页面中：加入<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags"%>
-	  	    ④：页面中：<sec:authorize access="hasRole('ROLE_USER')">
-	 方法级别：
-	 		①：加入：<global-method-security jsr250-annotations="enabled"/>
-	 		②：在接口上加入@RolesAllowed("ROLE_ADMIN")
-	 		
-	 
-	 -->
-	<!--  auto-config='true'将自动配置几种常用的权限控制机制，包括form, anonymous, rememberMe -->
+
+	<!-- 页面级别： ①：use-expressions 必须为true ②：access="ROLE_USER" ③：页面中：加入<%@ taglib 
+		prefix="sec" uri="http://www.springframework.org/security/tags"%> ④：页面中：<sec:authorize 
+		access="hasRole('ROLE_USER')"></sec:authorize> 方法级别： ①：加入：<global-method-security 
+		jsr250-annotations="enabled"/> ②：在接口上加入@RolesAllowed("ROLE_ADMIN") -->
+	<!-- auto-config='true'将自动配置几种常用的权限控制机制，包括form, anonymous, rememberMe 过滤器： 
+		http://www.cnblogs.com/minideas/archive/2011/01/19/1939186.html -->
 	<http auto-config="true" use-expressions="true">
-		<!-- 对所有的url对角色进行验证，对所有连接进行拦截 ，对所有的路径进行ROLE_USER验证-->
-		<intercept-url pattern="/**" access="hasRole('ROLE_USER')"/>
+		<!-- 对所有的url对角色进行验证，对所有连接进行拦截 ，对所有的路径进行ROLE_USER验证 -->
+		<intercept-url pattern="/**" access="hasRole('ROLE_USER')" />
 		<!-- <security:intercept-url pattern="/**" access="hasRole('ROLE_USER')"/> -->
-		
+
 	</http>
-	
+
 	<!-- 启用jsr250的注解，比如@RolesAllowed 这个注解 -->
-	<global-method-security secured-annotations="enabled" jsr250-annotations="enabled"/>
-	
+	<global-method-security secured-annotations="enabled"
+		jsr250-annotations="enabled" />
+
 	<authentication-manager>
 		<authentication-provider>
 			<user-service>
-				<!-- 提供的用户，只有这些用户可以登进来，后面是权限 ；jimi有admin权限和普通权限，bob只有普通用户权限-->
-				<user name="jimi" password="123"  authorities="ROLE_USER,ROLE_ADMIN"/>
-				
-				<user name="bob"  password="456" authorities="ROLE_USER"/>
+				<!-- 提供的用户，只有这些用户可以登进来，后面是权限 ；jimi有admin权限和普通权限，bob只有普通用户权限 -->
+				<user name="jimi" password="123" authorities="ROLE_USER,ROLE_ADMIN" />
+
+				<user name="bob" password="456" authorities="ROLE_USER" />
 			</user-service>
 		</authentication-provider>
 	</authentication-manager>
-	
-	
-	
+
+	<authentication-manager>
+		<authentication-provider ref="jaasAuthenticationProvider" />
+	</authentication-manager>
+
+
+	<!-- JAAS config -->
+	<beans:bean id="jaasAuthenticationProvider"
+		class="org.springframework.security.authentication.jaas.JaasAuthenticationProvider">
+		<!-- -->
+		<beans:property name="loginConfig" value="/WEB-INF/login.conf" />
+		<!-- /WEB-INF/login.conf 中配置的 JAASTest -->
+		<beans:property name="loginContextName" value="JAASTest" />
+		<beans:property name="callbackHandlers">
+			<beans:list>
+				<beans:bean
+					class="org.springframework.security.authentication.jaas.JaasNameCallbackHandler" />
+				<beans:bean
+					class="org.springframework.security.authentication.jaas.JaasPasswordCallbackHandler" />
+			</beans:list>
+		</beans:property>
+		<beans:property name="authorityGranters">
+			<beans:list>
+				<beans:bean class="simple.base.security.module.DefaultAuthorityGranter" />
+			</beans:list>
+		</beans:property>
+	</beans:bean>
+
+
 </beans:beans>

@@ -47,7 +47,22 @@ public class Sysuser {
 
     private String sysid;
 
-    public String getId() {
+    
+    
+    private String role;
+    
+    
+    
+    
+    public String getRole() {
+		return role;
+	}
+
+	public void setRole(String role) {
+		this.role = role;
+	}
+
+	public String getId() {
         return id;
     }
 

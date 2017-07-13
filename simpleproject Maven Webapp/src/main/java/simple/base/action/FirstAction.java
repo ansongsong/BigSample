@@ -13,6 +13,7 @@ import simple.base.service.UserService;
 @RequestMapping("/hello")
 public class FirstAction {
 
+//	DefaultLoginPageGeneratingFilter
 	@Autowired
 	private UserService userService;
 	//首页
