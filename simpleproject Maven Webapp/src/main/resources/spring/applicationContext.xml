@@ -108,4 +108,151 @@
 	</bean>
 	<!-- end -->
 
+
+
+   	
+   <!-- ===================================  配置Memcached =============================== -->  
+     <!-- 开启缓存 -->    
+   <!--  <cache:annotation-driven cache-manager="cacheManager" proxy-target-class="true" />  -->  
+    <!-- 导入外部properties -->  
+   <!--  <context:property-placeholder location="classpath:hometree.properties"/>-->    
+      <!-- 
+     <bean id="memcachedPool" class="com.danga.MemCached.SockIOPool"  
+        factory-method="getInstance" init-method="initialize" destroy-method="shutDown">  
+       <constructor-arg>  
+            <value>neeaMemcachedPool</value>  
+        </constructor-arg>  
+        <property name="servers">  
+            <list>  
+                <value>${memcache.server}</value>  
+            </list>  
+        </property>  
+        <property name="initConn">  
+            <value>${memcache.initConn}</value>  
+        </property>  
+        <property name="minConn">  
+            <value>${memcache.minConn}</value>  
+        </property>  
+        <property name="maxConn">  
+            <value>${memcache.maxConn}</value>  
+        </property>  
+        <property name="maintSleep">  
+            <value>${memcache.maintSleep}</value>  
+        </property>  
+        <property name="nagle">  
+            <value>${memcache.nagle}</value>  
+        </property>  
+        <property name="socketTO">  
+            <value>${memcache.socketTO}</value>  
+        </property>  
+    </bean>  -->  
+      
+    <!-- 配置MemcachedClient -->   <!--
+    <bean id="memcachedClient" class="com.danga.MemCached.MemCachedClient">  
+        <constructor-arg>  
+            <value>neeaMemcachedPool</value>  
+        </constructor-arg>  
+    </bean>  
+      -->  
+    <!-- 配置缓存管理 -->  <!--
+    <bean id="cacheManager" class="hometree.esc.cache.memcached.MemcachedCacheManager">  
+        <property name="memcachedClient" ref="memcachedClient"/>  --> 
+        <!-- 配置缓存时间 -->  <!-- 
+        <property name="configMap">  
+             <map>   --> 
+                 <!-- key缓存对象名称   value缓存过期时间 -->   <!-- 
+                 <entry key="systemCache" value="3600"/>  
+             </map>  
+        </property>  
+    </bean>  -->
+    <!--=====结束=严重: Exception sending context destroyed event to listener instance of class org.springframework.web.context.ContextLoaderListener
+java.lang.IllegalStateException: BeanFactory not initialized or already closed - call 'refresh' before accessing beans via the ApplicationContext======================= -->	
+    	   
+    	   <!-- org.springframework.cache.interceptor.CacheInterceptor -->
+   
+    
+    <!-- 
+     <cache:annotation-driven cache-manager="cacheManager" proxy-target-class="true" /> 
+     
+   
+      <bean id="memcachedClientBuilder" class="net.rubyeye.xmemcached.XMemcachedClientBuilder">  
+        <constructor-arg>  
+            <list>  
+                <bean class="java.net.InetSocketAddress">  
+                    <constructor-arg value="192.168.1.103" />  
+                    <constructor-arg value="2222" />  
+                </bean>  
+            </list>  
+        </constructor-arg>  
+        <property name="connectionPoolSize" value="5" />  
+        <property name="commandFactory">  
+            <bean class="net.rubyeye.xmemcached.command.BinaryCommandFactory" />  
+        </property>  
+        <property name="transcoder">  
+            <bean class="net.rubyeye.xmemcached.transcoders.SerializingTranscoder" />  
+        </property>  
+    </bean>  
+  
+    <bean id="memcachedClient" factory-bean="memcachedClientBuilder"  
+        factory-method="build" destroy-method="shutdown" />  
+          
+    <bean id="cacheManager" class="hometree.esc.cache.memcached.MemcachedCacheManager">  
+        <property name="memcachedClient" ref="memcachedClient" />  
+        <property name="configMap">  
+            <map>  --> 
+                <!-- key：@Cacheable、@CachePut、@CacheEvict等的value属性。value：缓存过期时间(单位：秒)，默认值：0  
+                <entry key="defaultCache" value="0" />--> <!-- 默认缓存区 不过期
+                <entry key="inTimeCache" value="3600" />--> <!-- 实时缓存区 一小时过期 
+            </map>  
+        </property>  
+    </bean>  --> 
+    
+    
+    
+    
+    
+    
+ 
+    
+    
+    
+    
+    
+    
+    <!-- 激活自动代理功能
+    <aop:aspectj-autoproxy proxy-target-class="true"/> -->
+    <!--
+    <import resource="classpath*:simplesm-context.xml" /> 
+    	   
+    <bean name="defaultMemcachedClient" class="com.google.code.ssm.CacheFactory">  
+        <property name="cacheClientFactory">  
+            <bean class="com.google.code.ssm.providers.xmemcached.MemcacheClientFactoryImpl" />  
+        </property>  
+        <property name="addressProvider">  
+            <bean class="com.google.code.ssm.config.DefaultAddressProvider">  
+                <property name="address" value="192.168.1.103:2222" />  
+            </bean>  
+        </property>  
+        <property name="configuration">  
+            <bean class="com.google.code.ssm.providers.CacheConfiguration">  
+                <property name="consistentHashing" value="true" />  
+            </bean>  
+        </property>  
+    </bean>  
+    -->  
+    
+    <!-- ehcache 
+    
+    <cache:annotation-driven cache-manager="cacheManager" />  
+
+    <bean id="cacheManager" class="org.springframework.cache.ehcache.EhCacheCacheManager">  
+        <property name="cacheManager" ref="ehcache"></property>  
+    </bean>  
+
+    <bean id="ehcache" class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean">  
+        <property name="configLocation" value="classpath:ehcache-setting.xml"></property>  
+    </bean>-->
+    
+    
+    <!-- ehcache -->
 </beans>
